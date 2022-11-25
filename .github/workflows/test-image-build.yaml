@@ -29,7 +29,7 @@ jobs:
           trap cleanup EXIT INT TERM
 
           # check if the service returns HTTP 200
-          wget --retry-connrefused --waitretry=1 --read-timeout=1 --timeout=1 -t 10 http://localhost:8000
+          wget --retry-connrefused --waitretry=1 --read-timeout=1 --timeout=1 -t 10 http://127.0.0.1:8000
 
           if [ $? = 0 ]; then
             echo "Fetching index successful"
