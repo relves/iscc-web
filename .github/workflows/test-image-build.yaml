@@ -14,13 +14,13 @@ jobs:
           push: false
           load: true
           tags: |
-            ghcr.io/iscc/iscc-web:${{ github.sha }}
+            ghcr.io/relves/iscc-web:${{ github.sha }}
           cache-from: type=gha,scope=app
           cache-to: type=gha,scope=app,mode=max
       - name: Fetch index
         run: |
           # start container
-          docker run --name=iscc-web -d -p 8000:8000 ghcr.io/iscc/iscc-web:${{ github.sha }}
+          docker run --name=iscc-web -d -p 8000:8000 ghcr.io/relves/iscc-web:${{ github.sha }}
 
           cleanup() {
             docker logs iscc-web
