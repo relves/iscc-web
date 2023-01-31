@@ -18,7 +18,7 @@ The microservice provides a REST API for generating ISCCs. The endpoints support
 upload/download, metadata extraction/embedding and ISCC processing.<br>
 
 Files uploaded for processing are automatically deleted after a configurable timeout.
-An interactive API documentation is available at [/docs](https://iscc.io/docs)<br>
+An interactive API documentation is available at [/docs](https://iscc.io/docs)<br><br>
 
 <img align="left" width="200" src="docs/iscc-web-vue-frontend.jpg?raw=true">
 
@@ -116,6 +116,18 @@ ISCC_WEB_LOG_LEVEL=INFO
 ISCC_WEB_IO_READ_SIZE=2097152
 FORWARDED_ALLOW_IPS=*
 ```
+
+You can also configure iscc-core and iscc-sdk dependencies. For example to activate generation
+of granular fingerprints (currently only implemented for text) add the following to your .env:
+
+```.env
+ISCC_SDK_GRANULAR=true
+```
+
+For available environment variables see:
+
+- https://sdk.iscc.codes/options/
+- https://core.iscc.codes/options/options/
 
 ### docker-compose.yaml
 
