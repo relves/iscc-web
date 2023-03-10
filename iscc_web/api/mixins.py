@@ -143,20 +143,22 @@ class FileHandler:
 
     async def download_file(self, url, local_filename):
         try:
-            with requests.head(url) as h:
+            with requests.head(url, allow_redirects=True) as h:
                 content_length = h.headers.get("Content-Length")
                 if content_length:
                     cl = int(content_length)
                     log.info(
-                        f"Content Length: {content_length} (max: {opts.max_upload_size})",
+                        f"Content Length: {content_length} (max bytes: {opts.max_upload_size})",
                         enqueue=True,
                     )
                     if cl < 1 or cl > opts.max_upload_size:
-                        log.info(f"File too large.", enqueue=True)
+                        log.info(f"File too large or zero bytes returned.", enqueue=True)
                         return self.status_code(
                             400,
-                            "Bad Request - Content-Length must be > 0 and <"
-                            f" {opts.max_upload_size}",
+                            (
+                                "Bad Request - Content-Length must be > 0 and <"
+                                f" {opts.max_upload_size} bytes."
+                            ),
                         )
             with requests.get(url, stream=True) as r:
                 r.raise_for_status()
