@@ -141,7 +141,7 @@ class FileHandler:
 
         return upload_meta
 
-    async def download_file(self, url, local_filename):
+    def download_file(self, url, local_filename):
         try:
             with requests.head(url, allow_redirects=True) as h:
                 content_length = h.headers.get("Content-Length")
@@ -204,10 +204,15 @@ class FileHandler:
         # Store file upload
         file_path = package_dir / upload_meta.clean_file_name
 
-        result = await self.download_file(url, file_path)
-        if result is not None:
-            log.info(f"RETURNING RESULT", enqueue=True)
-            return result
+        loop = asyncio.get_event_loop()
+        pool = app.service_provider[Pool]
+        try:
+            result = await loop.run_in_executor(pool, self.download_file, url, file_path)
+            if result is not None:
+                log.info(f"RETURNING RESULT", enqueue=True)
+                return result
+        except Exception as e:
+            return self.status_code(422, "Error downloading"+url+"> "+str(e))
 
         return upload_meta
 

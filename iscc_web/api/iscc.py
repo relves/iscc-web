@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import aiofile
-import requests
 from blacksheep import Request, ContentDispositionType, Response
 from blacksheep.server.controllers import ApiController, post, get
 from iscc_web.api.pool import Pool
 from iscc_web.api.mixins import FileHandler
 from iscc_web.api.common import base_url
 from loguru import logger as log
+import time
 
 
 class Iscc(ApiController, FileHandler):
@@ -45,9 +45,11 @@ class Iscc(ApiController, FileHandler):
         package_dir = self.package_dir(result.media_id)
         file_path = package_dir / result.clean_file_name
 
-        log.info(f"Start Processing: {result.media_id}", enqueue=True)
+        log.info(f"Start Processing: {result.media_id} ({result.clean_file_name})", enqueue=True)
+        start = time.time()
         proc_result = await self.process_iscc(file_path)
-        log.info(f"Finished Processing: {result.media_id}", enqueue=True)
+        end = time.time()
+        log.info(f"FINISHED in {round(end-start,3)}s: {result.clean_file_name} ({result.media_id}))", enqueue=True)
 
         if isinstance(proc_result, Response):
             return proc_result
